@@ -3,14 +3,6 @@
  *  @file   FrameBufferObject.cpp
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: FrameBufferObject.cpp 602 2010-08-19 02:43:34Z naohisa.sakamoto $
- */
 /*****************************************************************************/
 #include "FrameBufferObject.h"
 #include <kvs/Texture2D>
@@ -18,6 +10,7 @@
 #include <kvs/OpenGL>
 #include <kvs/Message>
 
+GLuint kvs::FrameBufferObject::m_unbind_id = 0; // Initialize static unbind id
 
 namespace kvs
 {
@@ -30,6 +23,7 @@ namespace kvs
 void FrameBufferObject::bind() const
 {
     KVS_ASSERT( this->isCreated() );
+//    KVS_GL_CALL( glGetIntegerv( GL_FRAMEBUFFER_BINDING, (GLint*)&m_unbind_id ) );
     KVS_GL_CALL( glBindFramebuffer( GL_FRAMEBUFFER, m_id ) );
 }
 
@@ -41,7 +35,7 @@ void FrameBufferObject::bind() const
 void FrameBufferObject::unbind() const
 {
     KVS_ASSERT( this->isBound() );
-    KVS_GL_CALL( glBindFramebuffer( GL_FRAMEBUFFER, 0 ) );
+    KVS_GL_CALL( glBindFramebuffer( GL_FRAMEBUFFER, m_unbind_id ) );
 }
 
 bool FrameBufferObject::isCreated() const
@@ -253,7 +247,7 @@ FrameBufferObject::Binder::Binder( const FrameBufferObject& fbo ) :
 FrameBufferObject::Binder::~Binder()
 {
     KVS_ASSERT( m_fbo.isCreated() );
-    KVS_GL_CALL( glBindFramebuffer( GL_FRAMEBUFFER, 0 ) );
+    m_fbo.unbind();
 }
 
 FrameBufferObject::GuardedBinder::GuardedBinder( const kvs::FrameBufferObject& fbo ):
