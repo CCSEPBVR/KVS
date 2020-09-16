@@ -1,14 +1,7 @@
 /*****************************************************************************/
 /**
  *  @file   BufferObject.cpp
- */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: BufferObject.cpp 602 2010-08-19 02:43:34Z naohisa.sakamoto $
+ *  @author Naohisa Sakamoto
  */
 /*****************************************************************************/
 #include "BufferObject.h"
@@ -165,13 +158,25 @@ bool BufferObject::isBound() const
 
 /*===========================================================================*/
 /**
+ *  Returns the padded buffer size  for input size.
+ *  @return buffer size
+ */
+/*===========================================================================*/
+GLsizei BufferObject::paddedBufferSize(GLsizei size)
+{
+     int x = size;
+     return (x + 15) & ~15;
+}
+
+/*===========================================================================*/
+/**
  *  Load buffer data from CPU to GPU.
  *  @param  size [in] buffer data size
  *  @param  data [in] pointer to loaded buffer data
  *  @param  offset [in] texel offset within the existing buffer data array
  */
 /*===========================================================================*/
-void BufferObject::load( const size_t size, const void* data, const size_t offset )
+GLsizei BufferObject::load( const size_t size, const void* data, const size_t offset )
 {
     if ( !m_is_loaded )
     {
@@ -182,6 +187,7 @@ void BufferObject::load( const size_t size, const void* data, const size_t offse
     {
         this->setBufferSubData( size, data, offset );
     }
+    return paddedBufferSize(size);
 }
 
 /*===========================================================================*/

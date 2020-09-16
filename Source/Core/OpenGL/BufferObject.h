@@ -3,14 +3,6 @@
  *  @file   BufferObject.h
  *  @author Naohisa Sakamoto
  */
-/*----------------------------------------------------------------------------
- *
- *  Copyright (c) Visualization Laboratory, Kyoto University.
- *  All rights reserved.
- *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
- *
- *  $Id: BufferObject.h 634 2010-10-13 07:04:05Z naohisa.sakamoto $
- */
 /*****************************************************************************/
 #ifndef KVS__BUFFER_OBJECT_H_INCLUDE
 #define KVS__BUFFER_OBJECT_H_INCLUDE
@@ -74,6 +66,8 @@ public:
     GLuint id() const;
     GLenum target() const;
     GLenum targetBinding() const;
+    static GLsizei paddedBufferSize( GLsizei size);
+
     size_t size() const;
 
     void setUsage( const GLenum usage );
@@ -87,7 +81,7 @@ public:
     bool isValid() const;
     bool isBound() const;
 
-    void load( const size_t size, const void* data, const size_t offset = 0 );
+    GLsizei load( const size_t size, const void* data, const size_t offset = 0 );
     void* map( const GLenum access_type = kvs::BufferObject::ReadWrite );
     void unmap();
 
