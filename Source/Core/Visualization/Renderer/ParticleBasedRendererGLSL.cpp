@@ -269,6 +269,10 @@ void ParticleBasedRenderer::Engine::release()
     {
         m_shader_program.release();
         for ( size_t i = 0; i < repetitionLevel(); i++ ) m_vbo_manager[i].release();
+        if (m_vbo_manager){
+            delete [] m_vbo_manager;
+            m_vbo_manager = NULL;
+        }
     }
 }
 
@@ -368,7 +372,10 @@ void ParticleBasedRenderer::Engine::setup( kvs::ObjectBase* object, kvs::Camera*
 void ParticleBasedRenderer::Engine::draw( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Light* light )
 {
     kvs::PointObject* point = kvs::PointObject::DownCast( object );
-
+    KVS_ASSERT( repetitionCount()  < repetitionLevel());
+    if (repetitionCount() >= repetitionLevel()){
+        return;
+    }
     kvs::VertexBufferObjectManager::Binder bind1( m_vbo_manager[ repetitionCount() ] );
     kvs::ProgramObject::Binder bind2( m_shader_program );
     kvs::Texture::Binder bind3( randomTexture() );

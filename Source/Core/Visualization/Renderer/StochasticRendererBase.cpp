@@ -117,7 +117,8 @@ void StochasticRendererBase::exec( kvs::ObjectBase* object, kvs::Camera* camera,
     }
 
     const bool object_changed = m_engine->object() != object;
-    if ( object_changed )
+    const bool replevel_changed = m_engine->repetitionLevel() != repetitionLevel();
+    if ( object_changed || replevel_changed)
     {
         m_ensemble_buffer.clear();
         m_engine->release();
@@ -127,7 +128,11 @@ void StochasticRendererBase::exec( kvs::ObjectBase* object, kvs::Camera* camera,
     }
 
     // LOD control.
-    size_t repetitions = m_repetition_level;
+    // Martin changed
+    // This instance repetition level might have been changed by user but not yet updated to Engine
+    // This potentially causes m_engine access unallocated areas of m_vbo manager[ ]
+    //    size_t repetitions = m_repetition_level;
+    size_t repetitions = m_engine->repetitionLevel();
     kvs::Vec3 light_position = light->position();
     kvs::Mat4 modelview = kvs::OpenGL::ModelViewMatrix();
     if ( m_light_position != light_position || m_modelview != modelview )
