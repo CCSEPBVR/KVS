@@ -254,6 +254,8 @@ $(OUTDIR)\.\Visualization\Data\TornadoVolumeData.obj \
 $(OUTDIR)\.\Visualization\Event\EventBase.obj \
 $(OUTDIR)\.\Visualization\Event\EventHandler.obj \
 $(OUTDIR)\.\Visualization\Event\EventListener.obj \
+$(OUTDIR)\.\Visualization\Event\FrameEvent.obj \
+$(OUTDIR)\.\Visualization\Event\FrameEventListener.obj \
 $(OUTDIR)\.\Visualization\Event\IdleEventListener.obj \
 $(OUTDIR)\.\Visualization\Event\InitializeEvent.obj \
 $(OUTDIR)\.\Visualization\Event\InitializeEventListener.obj \

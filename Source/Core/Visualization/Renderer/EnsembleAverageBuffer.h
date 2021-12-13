@@ -38,6 +38,8 @@ private:
     kvs::ProgramObject m_average_shader;
     kvs::ProgramObject m_drawing_shader;
 
+    kvs::FrameBufferObject::GuardedBinder *m_binder;
+
 public:
     const kvs::Texture2D& currentColorTexture() const { return m_current_color_texture; }
     const kvs::Texture2D& currentDepthTexture() const { return m_current_depth_texture; }

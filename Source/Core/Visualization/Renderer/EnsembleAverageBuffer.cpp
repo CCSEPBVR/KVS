@@ -15,7 +15,6 @@
 #include "EnsembleAverageBuffer.h"
 #include <kvs/OpenGL>
 
-
 namespace
 {
 
@@ -58,6 +57,8 @@ void EnsembleAverageBuffer::create( const size_t width, const size_t height )
     m_count = 0;
     m_accum_framebuffer.create();
     m_current_framebuffer.create();
+
+    m_binder = nullptr;
 
     m_accum_texture.setWrapS( GL_CLAMP_TO_EDGE );
     m_accum_texture.setWrapT( GL_CLAMP_TO_EDGE );
@@ -148,7 +149,8 @@ void EnsembleAverageBuffer::clear()
 {
     m_count = 0;
 
-    kvs::FrameBufferObject::Binder binder( m_accum_framebuffer );
+    //kvs::FrameBufferObject::Binder binder( m_accum_framebuffer );
+    kvs::FrameBufferObject::GuardedBinder binder( m_accum_framebuffer );
     kvs::OpenGL::Clear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 }
 
@@ -159,7 +161,8 @@ void EnsembleAverageBuffer::clear()
 /*===========================================================================*/
 void EnsembleAverageBuffer::bind()
 {
-    m_current_framebuffer.bind();
+    //m_current_framebuffer.bind();
+    m_binder = new kvs::FrameBufferObject::GuardedBinder (m_current_framebuffer);
     kvs::OpenGL::Clear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 }
 
@@ -170,7 +173,12 @@ void EnsembleAverageBuffer::bind()
 /*===========================================================================*/
 void EnsembleAverageBuffer::unbind()
 {
-    m_current_framebuffer.unbind();
+    //m_current_framebuffer.unbind();
+    if(m_binder)
+    {
+        delete(m_binder);
+        m_binder = nullptr;
+    }
 }
 
 /*===========================================================================*/
@@ -182,7 +190,8 @@ void EnsembleAverageBuffer::add()
 {
     m_count++;
 
-    kvs::FrameBufferObject::Binder fbo( m_accum_framebuffer );
+    //kvs::FrameBufferObject::Binder fbo( m_accum_framebuffer );
+    kvs::FrameBufferObject::GuardedBinder fbo( m_accum_framebuffer );
     kvs::Texture::Binder tex0( m_current_color_texture, 0 );
     kvs::Texture::Binder tex1( m_current_depth_texture, 1 );
     kvs::Texture::Binder tex2( m_accum_texture, 2 );

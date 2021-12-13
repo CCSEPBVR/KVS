@@ -208,6 +208,10 @@ const kvs::Vec4& ParticleBasedRenderer::initialViewport() const
     return static_cast<const Engine&>( engine() ).initialViewport();
 }
 
+void ParticleBasedRenderer::updateModelViewMatrixTest()
+{
+    static_cast<Engine&>( engine() ).updateModelViewMatrix();
+}
 /*===========================================================================*/
 /**
  *  @brief  Constructs a new Engine class.
@@ -300,12 +304,35 @@ void ParticleBasedRenderer::Engine::create( kvs::ObjectBase* object, kvs::Camera
     if ( kvs::Math::IsZero( m_initial_modelview[3][3] ) )
     {
         m_initial_modelview = kvs::OpenGL::ModelViewMatrix();
+
+
+        std::cerr << "ParticleBasedRenderer::Engine::create(): m_initial_modelview[3][3] is zero." << std::endl;
+    } else {
+        std::cerr << "ParticleBasedRenderer::Engine::create(): m_initial_modelview[3][3] is NOT zero." << std::endl;
+
     }
+    std::cerr << std::showpos << std::scientific << "     " << m_initial_modelview[0][0] << "  " << m_initial_modelview[0][1] << "  " << m_initial_modelview[0][2] << "  " << m_initial_modelview[0][3] << std::endl;
+    std::cerr << std::showpos << std::scientific << "     " << m_initial_modelview[1][0] << "  " << m_initial_modelview[1][1] << "  " << m_initial_modelview[1][2] << "  " << m_initial_modelview[1][3] << std::endl;
+    std::cerr << std::showpos << std::scientific << "     " << m_initial_modelview[2][0] << "  " << m_initial_modelview[2][1] << "  " << m_initial_modelview[2][2] << "  " << m_initial_modelview[2][3] << std::endl;
+    std::cerr << std::showpos << std::scientific << "     " << m_initial_modelview[3][0] << "  " << m_initial_modelview[3][1] << "  " << m_initial_modelview[3][2] << "  " << m_initial_modelview[3][3] << std::endl;
+
 
     if ( kvs::Math::IsZero( m_initial_projection[3][3] ) )
     {
         m_initial_projection = kvs::OpenGL::ProjectionMatrix();
+
+
+        std::cerr << "ParticleBasedRenderer::Engine::create(): m_initial_projection[3][3] is zero." << std::endl;
+    } else {
+        std::cerr << "ParticleBasedRenderer::Engine::create(): m_initial_projection[3][3] is NOT zero." << std::endl;
+
     }
+    std::cerr << std::showpos << std::scientific << "     " << m_initial_projection[0][0] << "  " << m_initial_projection[0][1] << "  " << m_initial_projection[0][2] << "  " << m_initial_projection[0][3] << std::endl;
+    std::cerr << std::showpos << std::scientific << "     " << m_initial_projection[1][0] << "  " << m_initial_projection[1][1] << "  " << m_initial_projection[1][2] << "  " << m_initial_projection[1][3] << std::endl;
+    std::cerr << std::showpos << std::scientific << "     " << m_initial_projection[2][0] << "  " << m_initial_projection[2][1] << "  " << m_initial_projection[2][2] << "  " << m_initial_projection[2][3] << std::endl;
+    std::cerr << std::showpos << std::scientific << "     " << m_initial_projection[3][0] << "  " << m_initial_projection[3][1] << "  " << m_initial_projection[3][2] << "  " << m_initial_projection[3][3] << std::endl;
+
+
 
     if ( kvs::Math::IsZero( m_initial_viewport[2] ) )
     {
@@ -314,7 +341,16 @@ void ParticleBasedRenderer::Engine::create( kvs::ObjectBase* object, kvs::Camera
         const float framebuffer_height = camera->windowHeight() * dpr;
         m_initial_viewport[2] = framebuffer_width;
         m_initial_viewport[3] = framebuffer_height;
+
+        std::cerr << "ParticleBasedRenderer::Engine::create(): viewport[2] is zero." << std::endl;
+        std::cerr << "     dpr       = " << dpr << std::endl;
+        std::cerr << "     fb_width  = " << dpr << std::endl;
+        std::cerr << "     fb_height = " << dpr << std::endl;
+
+    } else {
+        std::cerr << "ParticleBasedRenderer::Engine::create(): viewport[2] is NOT zero." << std::endl;
     }
+    std::cerr << "     m_initial_viewport =( " << m_initial_viewport[0] << ", " << m_initial_viewport[1] << ", " << m_initial_viewport[2] << ", " << m_initial_viewport[3] << ")" << std::endl;
 
     const kvs::Vec4 I( point->objectCenter(), 1.0f );
     const kvs::Vec4 O = m_initial_projection * m_initial_modelview * I;
@@ -380,6 +416,10 @@ void ParticleBasedRenderer::Engine::draw( kvs::ObjectBase* object, kvs::Camera* 
     kvs::ProgramObject::Binder bind2( m_shader_program );
     kvs::Texture::Binder bind3( randomTexture() );
     {
+        // 20210616 add by insight
+        kvs::OpenGL::WithEnabled dd( GL_DEPTH_TEST );
+        kvs::OpenGL::WithEnabled dp( GL_VERTEX_PROGRAM_POINT_SIZE );
+
         const kvs::Mat4& m0 = m_initial_modelview;
         const float scale0 = kvs::Vec3( m0[0][0], m0[1][0], m0[2][0] ).length();
         const float width0 = m_initial_viewport[2];
@@ -480,6 +520,15 @@ void ParticleBasedRenderer::Engine::create_buffer_object( const kvs::PointObject
     const size_t nvertices = point->numberOfVertices();
     const size_t rem = nvertices % repetitionLevel();
     const size_t quo = nvertices / repetitionLevel();
+
+    std::cerr << "ParticleBasedRenderer::Engine::create_buffer_object():" << std::endl;
+    std::cerr << "     repeat_level = " << repetitionLevel() << std::endl;
+    std::cerr << "           nverts = " << nvertices << std::endl;
+    std::cerr << "              rem = " << rem << std::endl;
+    std::cerr << "              quo = " << quo << std::endl;
+    std::cerr << "     m_has_normal = " << m_has_normal << std::endl;
+
+
     for ( size_t i = 0; i < repetitionLevel(); i++ )
     {
         const size_t count = quo + ( i < rem ? 1 : 0 );
@@ -512,7 +561,7 @@ void ParticleBasedRenderer::Engine::create_buffer_object( const kvs::PointObject
         m_vbo_manager[i].create();
     }
 }
-
+  
 } // end of glsl
 
 } // end of kvs

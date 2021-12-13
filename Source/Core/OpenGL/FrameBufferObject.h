@@ -3,6 +3,14 @@
  *  @file   FrameBufferObject.h
  *  @author Naohisa Sakamoto
  */
+/*----------------------------------------------------------------------------
+ *
+ *  Copyright (c) Visualization Laboratory, Kyoto University.
+ *  All rights reserved.
+ *  See http://www.viz.media.kyoto-u.ac.jp/kvs/copyright/ for details.
+ *
+ *  $Id: FrameBufferObject.h 634 2010-10-13 07:04:05Z naohisa.sakamoto $
+ */
 /****************************************************************************/
 #pragma once
 #include <string>
@@ -29,7 +37,8 @@ private:
 public:
     class Binder;
     class GuardedBinder;
-    static GLuint m_unbind_id; ///< Initial frame buffer id.
+    // @see https://github.com/naohisas/KVS/commit/4e3a36473cc0b7cc1418e49b949e5f8d62d8c489
+    static GLuint m_unbind_id;
 
 public:
     FrameBufferObject(): m_id( 0 ) {}

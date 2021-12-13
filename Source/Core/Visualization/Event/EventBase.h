@@ -42,7 +42,8 @@ public:
         WheelEvent            = kvsBinary12(0000,1000,0000),
         TimerEvent            = kvsBinary12(0001,0000,0000),
         KeyPressEvent         = kvsBinary12(0010,0000,0000),
-        AllEvents             = kvsBinary12(0011,1111,1111)
+        FrameEvent            = kvsBinary12(0100,0000,0000),
+        AllEvents             = kvsBinary12(0111,1111,1111)
     };
 
 public:

@@ -70,6 +70,7 @@ public:
     virtual void wheelEvent( kvs::WheelEvent* ) {}
     virtual void keyPressEvent( kvs::KeyEvent* ) {}
     virtual void timerEvent( kvs::TimeEvent* ) {}
+    virtual void frameEvent() {}
 };
 
 } // end of namespace kvs

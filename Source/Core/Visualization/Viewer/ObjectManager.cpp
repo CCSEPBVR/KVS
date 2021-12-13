@@ -705,6 +705,25 @@ void ObjectManager::scale( const kvs::Vec3& scaling )
 
 /*==========================================================================*/
 /**
+ *  @brief  Translating, Scaling, Rotating the all objects.
+ */
+/*==========================================================================*/
+void ObjectManager::handscontroller( const kvs::Xform x)
+{
+    kvs::ObjectBase* object = this->get_control_target();
+    object->multiplyXform( x );
+
+    ObjectIterator registered_object = this->get_control_first_pointer();
+    ObjectIterator last = this->get_control_last_pointer();
+    while ( registered_object != last )
+    {
+        (*registered_object)->multiplyXform( x );
+        ++registered_object;
+    }
+}
+
+/*==========================================================================*/
+/**
  *  @brief  Update the external coordinate.
  */
 /*==========================================================================*/

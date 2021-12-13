@@ -1,9 +1,3 @@
-/*****************************************************************************/
-/**
- *  @file   VertexBufferObjectManager.cpp
- *  @author Naohisa Sakamoto
- */
-/*****************************************************************************/
 #pragma once
 #include <kvs/VertexBufferObject>
 #include <kvs/IndexBufferObject>
@@ -70,7 +64,6 @@ private:
     kvs::IndexBufferObject m_ibo;
     size_t m_vbo_size;
     size_t m_ibo_size;
-
 
     VertexBuffer m_vertex_array;
     VertexBuffer m_color_array;

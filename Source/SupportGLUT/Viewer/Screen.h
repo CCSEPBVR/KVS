@@ -59,7 +59,8 @@ public:
     typedef kvs::glut::ScreenBase BaseClass;
     typedef kvs::Scene::ControlTarget ControlTarget;
 
-private:
+//private:
+protected:
     bool m_enable_default_paint_event; ///< flag for default paint event
     bool m_enable_default_resize_event; ///< flag for default resize event
     bool m_enable_default_mouse_press_event; ///< flag for default mouse press event

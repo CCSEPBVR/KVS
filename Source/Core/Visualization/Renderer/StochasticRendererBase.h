@@ -81,7 +81,7 @@ public:
     template <typename ShadingType>
     void setShader( const ShadingType shader );
 
-protected:
+//protected:
     kvs::Shader::ShadingModel& shader() { return *m_shader; }
     kvs::StochasticRenderingEngine& engine() { return *m_engine; }
 };

@@ -1,9 +1,3 @@
-/*****************************************************************************/
-/**
- *  @file   VertexBufferObjectManager.cpp
- *  @author Naohisa Sakamoto
- */
-/*****************************************************************************/
 #include "VertexBufferObjectManager.h"
 #include <algorithm>
 

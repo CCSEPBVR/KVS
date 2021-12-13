@@ -68,10 +68,12 @@ public:
     virtual void setup( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Light* light ) = 0;
     virtual void draw( kvs::ObjectBase* object, kvs::Camera* camera, kvs::Light* light ) = 0;
 
-protected:
-    const kvs::Shader::ShadingModel& shader() const { return *m_shader; }
+    // 20210610 change accessibility from protected to public for PBVRSthcoasticRenderingCompositor
     void resetRepetitions() { m_repetition_count = 0; }
     void countRepetitions() { m_repetition_count++; }
+
+protected:
+    const kvs::Shader::ShadingModel& shader() const { return *m_shader; }
     void attachObject( const kvs::ObjectBase* object ) { m_object = object; }
     void detachObject() { m_object = NULL; }
     void createRandomTexture();

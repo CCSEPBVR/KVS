@@ -118,7 +118,7 @@ void StochasticRendererBase::exec( kvs::ObjectBase* object, kvs::Camera* camera,
 
     const bool object_changed = m_engine->object() != object;
     const bool replevel_changed = m_engine->repetitionLevel() != repetitionLevel();
-    if ( object_changed || replevel_changed)
+    if ( object_changed || replevel_changed )
     {
         m_ensemble_buffer.clear();
         m_engine->release();

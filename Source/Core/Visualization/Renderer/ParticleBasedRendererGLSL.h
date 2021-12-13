@@ -59,6 +59,7 @@ public:
     const kvs::Mat4& initialModelViewMatrix() const;
     const kvs::Mat4& initialProjectionMatrix() const;
     const kvs::Vec4& initialViewport() const;
+    void updateModelViewMatrixTest();
 
 public:
     // Invalid methods.
@@ -123,6 +124,8 @@ public:
     const kvs::Mat4& initialModelViewMatrix() const { return m_initial_modelview; }
     const kvs::Mat4& initialProjectionMatrix() const { return m_initial_projection; }
     const kvs::Vec4& initialViewport() const { return m_initial_viewport; }
+
+    void updateModelViewMatrix() { m_initial_modelview = kvs::OpenGL::ModelViewMatrix(); }
 
 private:
     void create_shader_program();
