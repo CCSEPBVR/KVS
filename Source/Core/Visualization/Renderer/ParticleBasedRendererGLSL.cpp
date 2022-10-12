@@ -355,6 +355,7 @@ void ParticleBasedRenderer::Engine::create( kvs::ObjectBase* object, kvs::Camera
     const kvs::Vec4 I( point->objectCenter(), 1.0f );
     const kvs::Vec4 O = m_initial_projection * m_initial_modelview * I;
     m_initial_object_depth = O.z();
+    std::cout << "m_initial_object_depth = " << m_initial_object_depth << std::endl;
 }
 
 /*===========================================================================*/
@@ -446,9 +447,50 @@ void ParticleBasedRenderer::Engine::draw( kvs::ObjectBase* object, kvs::Camera* 
         const size_t rem = nvertices % repetitionLevel();
         const size_t quo = nvertices / repetitionLevel();
         const size_t count = quo + ( repetitionCount() < rem ? 1 : 0 );
+
+	std::cout << "m0           = " << m0 << std::endl;
+	std::cout << "scale0       = " << scale0 << std::endl;
+	std::cout << "width0       = " << width0 << std::endl;
+	std::cout << "height0      = " << height0 << std::endl;
+	std::cout << "m            = " << m << std::endl;
+	std::cout << "scale        = " << scale << std::endl;
+	std::cout << "dpr          = " << dpr << std::endl;
+	std::cout << "width        = " << width << std::endl;
+	std::cout << "height       = " << height << std::endl;
+	std::cout << "Cr           = " << Cr << std::endl;
+	std::cout << "Cs           = " << Cs << std::endl;
+	std::cout << "D0           = " << D0 << std::endl;
+	std::cout << "object_scale = " << object_scale << std::endl;
+	std::cout << "object_depth = " << object_depth << std::endl;
+	std::cout << "nvertices    = " << nvertices << std::endl;
+	std::cout << "rem          = " << rem << std::endl;
+	std::cout << "quo          = " << quo << std::endl;
+	std::cout << "count        = " << count << std::endl;
+	
         kvs::OpenGL::EnableVertexAttribArray( m_random_index );
         kvs::OpenGL::VertexAttribPointer( m_random_index, 2, GL_UNSIGNED_SHORT, GL_FALSE, 0, (GLubyte*)NULL + 0 );
         m_vbo_manager[ repetitionCount() ].drawArrays( GL_POINTS, 0, count );
+	
+	//if ( ProjectionMatrix[3][3] > 0.0 )
+	if ( m_initial_projection[3][3] > 0.0 )
+	  {
+	    // Orthogonal projection
+	    //return object_scale * 1.0;
+	    std::cout << object_scale * 1.0 << std::endl;
+	  }
+	else
+	  {
+	    // Perspective projection
+	    //float D = p.z; // depth value
+	    kvs::PointObject* point = kvs::PointObject::DownCast( object );
+	    float D = point->objectCenter().z(); // depth value
+	    if ( D < 1.0 ) D = 1.0; // to avoid front-clip
+	    //	    return object_depth / D;
+
+	    //return object_depth / D;
+	    std::cout << m_initial_object_depth / D << std::endl;
+	  }
+
         kvs::OpenGL::DisableVertexAttribArray( m_random_index );
     }
 }
