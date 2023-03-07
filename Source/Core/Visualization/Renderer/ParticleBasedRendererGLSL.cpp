@@ -369,7 +369,9 @@ void ParticleBasedRenderer::Engine::update( kvs::ObjectBase* object, kvs::Camera
 {
     const float dpr = camera->devicePixelRatio();
     const float framebuffer_width = camera->windowWidth() * dpr;
+    const float framebuffer_height = camera->windowHeight() * dpr;
     m_initial_viewport[2] = static_cast<float>( framebuffer_width );
+    m_initial_viewport[3] = static_cast<float>( framebuffer_height );
 }
 
 /*===========================================================================*/
