@@ -312,7 +312,8 @@ void PointRenderingFunction( const kvs::PointObject* point, const float dpr = 1.
 
 #else
 
-void PointRenderingFunction( const kvs::PointObject* )
+//void PointRenderingFunction( const kvs::PointObject* )
+void PointRenderingFunction( const kvs::PointObject* point, const float dpr = 1.0f )
 {
 };
 
