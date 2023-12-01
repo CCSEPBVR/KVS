@@ -1,0 +1,223 @@
+#  Makefile.kvs
+#*****************************************************************************
+#*****************************************************************************
+
+#=============================================================================
+#  KVS_DIR.
+#=============================================================================
+ifndef KVS_DIR
+$(error KVS_DIR is not defined.)
+endif
+
+
+#=============================================================================
+#  Include.
+#=============================================================================
+include $(KVS_DIR)/kvs.conf
+-include kvsmake.conf
+include $(KVS_DIR)/Makefile.def
+
+#=============================================================================
+#  INCLUDE_PATH, LIBRARY_PATH, LINK_LIBRARY, INSTALL_DIR.
+#=============================================================================
+#INCLUDE_PATH :=
+#LIBRARY_PATH :=
+#LINK_LIBRARY :=
+#INSTALL_DIR  :=
+
+#=============================================================================
+#  Project name.
+#=============================================================================
+PROJECT_NAME := LibCGFormatExt4KVS
+
+ifeq "$(findstring CYGWIN,$(shell uname -s))" "CYGWIN"
+TARGET_EXE := $(PROJECT_NAME).exe
+else
+TARGET_EXE := $(PROJECT_NAME)
+endif
+
+TARGET_LIB := lib$(PROJECT_NAME).a
+TARGET_DYLIB := lib$(PROJECT_NAME).so
+TARGET_OCL := $(PROJECT_NAME).so
+
+#=============================================================================
+#  Source.
+#=============================================================================
+SOURCES = \
+StochasticTexturedPolygonRenderer.cpp \
+TexturedPolygonImporter.cpp \
+TexturedPolygonObject.cpp \
+Utils.cpp
+
+ifeq "$(CGFORMATEXT4KVS_SUPPORT_FBXSDK)" "1"
+SOURCES += FBX.cpp
+DEFINITIONS += -DCGFORMATEXT4KVS_SUPPORT_FBXSDK
+endif
+
+ifeq "$(CGFORMATEXT4KVS_SUPPORT_ASSIMP)" "1"
+SOURCES += ThreeDS.cpp
+DEFINITIONS += -DCGFORMATEXT4KVS_SUPPORT_ASSIMP
+endif
+
+#=============================================================================
+#  Object.
+#=============================================================================
+OBJECTS = $(SOURCES:.cpp=.o)
+
+#=============================================================================
+#  Include path.
+#=============================================================================
+ifeq "$(KVS_SUPPORT_GLUT)" "1"
+INCLUDE_PATH += $(GLUT_INCLUDE_PATH)
+endif
+
+ifeq "$(KVS_SUPPORT_OPENCV)" "1"
+INCLUDE_PATH += $(OPENCV_INCLUDE_PATH)
+endif
+
+ifeq "$(KVS_SUPPORT_CUDA)" "1"
+INCLUDE_PATH += $(CUDA_INCLUDE_PATH)
+endif
+
+ifeq "$(KVS_SUPPORT_PYTHON)" "1"
+INCLUDE_PATH += $(PYTHON_INCLUDE_PATH)
+INCLUDE_PATH += $(NUMPY_INCLUDE_PATH)
+endif
+
+ifeq "$(KVS_SUPPORT_EGL)" "1"
+INCLUDE_PATH += $(EGL_INCLUDE_PATH)
+endif
+
+INCLUDE_PATH += -I$(KVS_DIR)/include
+INCLUDE_PATH += $(GLEW_INCLUDE_PATH)
+INCLUDE_PATH += $(GL_INCLUDE_PATH)
+
+
+#=============================================================================
+#  Library path.
+#=============================================================================
+ifeq "$(KVS_SUPPORT_GLUT)" "1"
+LIBRARY_PATH += $(GLUT_LIBRARY_PATH)
+endif
+
+ifeq "$(KVS_SUPPORT_OPENCV)" "1"
+LIBRARY_PATH += $(OPENCV_LIBRARY_PATH)
+endif
+
+ifeq "$(KVS_SUPPORT_CUDA)" "1"
+LIBRARY_PATH+ = $(CUDA_LIBRARY_PATH)
+endif
+
+ifeq "$(KVS_SUPPORT_PYTHON)" "1"
+LIBRARY_PATH += $(PYTHON_LIBRARY_PATH)
+LIBRARY_PATH += $(NUMPY_LIBRARY_PATH)
+endif
+
+ifeq "$(KVS_SUPPORT_EGL)" "1"
+LIBRARY_PATH += $(EGL_LIBRARY_PATH)
+endif
+
+LIBRARY_PATH += -L"$(KVS_DIR)\lib"
+LIBRARY_PATH += $(GLEW_LIBRARY_PATH)
+LIBRARY_PATH += $(GL_LIBRARY_PATH)
+
+
+#=============================================================================
+#  Link library.
+#=============================================================================
+ifeq "$(KVS_SUPPORT_GLUT)" "1"
+LINK_LIBRARY += $(LIB_KVS_SUPPORT_GLUT) $(GLUT_LINK_LIBRARY)
+endif
+
+ifeq "$(KVS_SUPPORT_OPENCV)" "1"
+LINK_LIBRARY += $(LIB_KVS_SUPPORT_GLEW) $(OPENCV_LINK_LIBRARY)
+endif
+
+ifeq "$(KVS_SUPPORT_CUDA)" "1"
+LINK_LIBRARY += $(LIB_KVS_SUPPORT_CUDA) $(CUDA_LINK_LIBRARY)
+endif
+LINK_LIBRARY += $(LIB_KVS_SUPPORT_PYTHON) $(PYTHON_LINK_LIBRARY)
+
+ifeq "$(KVS_SUPPORT_PYTHON)" "1"
+LINK_LIBRARY += $(NUMPY_LINK_LIBRARY)
+endif
+
+ifeq "$(KVS_SUPPORT_EGL)" "1"
+LINK_LIBRARY += $(LIB_KVS_SUPPORT_EGL) $(EGL_LINK_LIBRARY)
+endif
+
+ifeq "$(KVS_SUPPORT_OSMESA)" "1"
+LINK_LIBRARY += $(LIB_KVS_SUPPORT_OSMESA)
+endif
+
+LINK_LIBRARY += $(LIB_KVS_CORE)
+LINK_LIBRARY += $(GLEW_LINK_LIBRARY)
+LINK_LIBRARY += $(GL_LINK_LIBRARY)
+
+#=============================================================================
+#  Build rule.
+#=============================================================================
+$(TARGET_EXE): $(OBJECTS)
+	$(LD) $(LDFLAGS) $(LIBRARY_PATH) -o $@ $^ $(LINK_LIBRARY)
+
+$(TARGET_LIB): $(OBJECTS)
+	$(AR) $@ $^
+	$(RANLIB) $@
+
+$(TARGET_DYLIB): $(OBJECTS)
+	$(LD) $(LDFLAGS) -shared -rdynamic $(LIBRARY_PATH) -o $@ $^ $(LINK_LIBRARY)
+
+$(TARGET_OCL): $(OBJECTS)
+	$(LD) $(LDFLAGS) -shared -rdynamic $(LIBRARY_PATH) -o $@ $^ $(LINK_LIBRARY) $(OPENCABIN_LINK_LIBRARY)
+
+%.o: %.cpp %.h
+	echo "-------"
+	echo $(DEFINITIONS)
+	echo "-------"
+	$(CPP) -c $(CPPFLAGS) $(DEFINITIONS) $(INCLUDE_PATH) -o $@ $<
+
+%.o: %.cpp
+	echo "-------"
+	echo $(DEFINITIONS)
+	echo "-------"
+	$(CPP) -c $(CPPFLAGS) $(DEFINITIONS) $(INCLUDE_PATH) -o $@ $<
+
+# .h.cpp::
+
+
+#=============================================================================
+#  build.
+#=============================================================================
+build: $(TARGET_EXE)
+
+
+#=============================================================================
+#  lib.
+#=============================================================================
+lib: $(TARGET_LIB)
+
+
+#=============================================================================
+#  clean.
+#=============================================================================
+clean:
+	$(RM) $(TARGET_EXE) $(TARGET_LIB) $(OBJECTS)
+
+
+#=============================================================================
+#  distclean.
+#=============================================================================
+distclean: clean
+	$(RM) Makefile.kvs
+
+#=============================================================================
+#  install.
+#=============================================================================
+ifneq "$(INSTALL_DIR)" ""
+install:
+	$(MKDIR) $(INSTALL_DIR)/include
+	$(INSTALL) *.h $(INSTALL_DIR)/include
+	$(MKDIR) $(INSTALL_DIR)/lib
+	$(INSTALL) $(TARGET_LIB) $(INSTALL_DIR)/lib
+	$(RANLIB) $(INSTALL_DIR)/lib/$(TARGET_LIB)
+endif

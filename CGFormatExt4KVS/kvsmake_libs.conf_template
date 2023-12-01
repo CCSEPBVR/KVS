@@ -1,0 +1,23 @@
+#
+# library path definotion file for kvsmake
+#
+
+CGFORMATEXT4KVS_SUPPORT_FBXSDK = 1
+CGFORMATEXT4KVS_SUPPORT_ASSIMP = 0
+
+FBX_SDK_DIR := "/Applications/Autodesk/FBX SDK/2020.3.4"
+ASSIMP_DIR := $(HOME)/works/lib/assimp-5.0
+
+ifeq "$(CGFORMATEXT4KVS_SUPPORT_FBXSDK)" "1"
+FBX_SDK_INC_PATH := -I$(FBX_SDK_DIR)/include
+FBX_SDK_LIB_PATH := -L$(FBX_SDK_DIR)/lib/clang/release
+FBX_SDK_LIBS := -lfbxsdk
+DEFINITIONS := -DCGFORMATEXT4KVS_SUPPORT_FBXSDK
+endif
+
+ifeq "$(CGFORMATEXT4KVS_SUPPORT_ASSIMP)" "1"
+ASSIMP_INC_PATH := -I$(ASSIMP_DIR)/include
+ASSIMP_LIB_PATH := -L$(ASSIMP_DIR)/xxx
+ASSIMP_LIBS := -lassimp -lIrrXML -lzlibstatic
+DEFINITIONS := -DCGFORMATEXT4KVS_SUPPORT_ASSIMP
+endif
